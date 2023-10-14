@@ -234,8 +234,5 @@ int main()
         
     } while (Opcion >= 1 && Opcion <= 4);
 
-    
-
-
     return 0;
 }
