@@ -13,22 +13,104 @@ typedef struct cartas
     struct cartas *next;
 } Cartas_Juego;
 
+
+// Función para cargar cartas desde un archivo
+Cartas_Juego *cargarCartasDesdeArchivo(const char *nombreArchivo) 
+{
+    FILE *archivoCartas = fopen(nombreArchivo, "r");
+    if (archivoCartas == NULL) 
+    {
+        printf("Error al abrir el archivo de cartas\n");
+        return NULL;
+    }
+
+    Cartas_Juego *primerCarta = NULL;
+    Cartas_Juego *ultimaCarta = NULL;
+
+    while (!feof(archivoCartas)) 
+    {
+        Cartas_Juego *nuevaCarta = (Cartas_Juego*)malloc(sizeof(Cartas_Juego));
+        if (nuevaCarta == NULL) 
+        {
+            printf("Ah ocurrido un error al asignar memoria para la nueva carta\n");
+            fclose(archivoCartas);
+            return NULL;
+        }
+
+        int elementosLeidos = fscanf(archivoCartas, "%[^,],%[^,],%d,%d,%d\n", nuevaCarta->Nombre, nuevaCarta->Clase, &nuevaCarta->Vida, &nuevaCarta->Ataque, &nuevaCarta->Defensa);
+        if (elementosLeidos == 5) 
+        {
+            nuevaCarta->next = NULL;
+
+            if (primerCarta == NULL) 
+            {
+                primerCarta = nuevaCarta;
+                ultimaCarta = nuevaCarta;
+            }
+            else 
+            {
+                ultimaCarta->next = nuevaCarta;
+                ultimaCarta = nuevaCarta;
+            }
+        }
+        else 
+        {
+            printf("Ah ocurrido un error al leer los datos de la carta desde el archivo\n");
+            free(nuevaCarta);
+        }
+    }
+    fclose(archivoCartas);
+    return primerCarta;
+}
+
+
+void Agregar_Carta(Cartas_Juego* nuevaCarta, const char* nombreArchivo) 
+{
+    FILE* archivoCartas = fopen(nombreArchivo, "a");
+    if (archivoCartas == NULL) 
+    {
+        printf("Error al abrir el archivo de cartas\n");
+        return;
+    }
+
+    fprintf(archivoCartas, "%s,%s,%d,%d,%d\n", nuevaCarta->Nombre, nuevaCarta->Clase, nuevaCarta->Vida, nuevaCarta->Ataque, nuevaCarta->Defensa);
+
+    fclose(archivoCartas);
+}
+
+
+// Función para imprimir cartas
+void Imprimir_Cartas(Cartas_Juego* lista_cartas) {
+    printf("Lista de Cartas:\n");
+    while (lista_cartas != NULL) {
+        printf("Nombre: %s\n", lista_cartas->Nombre);
+        printf("Clase: %s\n", lista_cartas->Clase);
+        printf("Vida: %d\n", lista_cartas->Vida);
+        printf("Ataque: %d\n", lista_cartas->Ataque);
+        printf("Defensa: %d\n", lista_cartas->Defensa);
+        printf("\n");
+        lista_cartas = lista_cartas->next;
+    }
+}
+
+
 //Funcion para crear carta
-void Crear_Carta(Cartas_Juego *carta_creada)
+void Crear_Carta(Cartas_Juego **carta_creada)
 {
     int ClaseGuardian;
+    Cartas_Juego *nuevaCarta = (Cartas_Juego*)malloc(sizeof(Cartas_Juego));
+
     printf("***********************************************\n");
     printf("* Bienvenido al apartado para crear una carta *\n");
     printf("*     ¿Que nombre desea darle al guardian?     *\n");
-    scanf("%s", &carta_creada->Nombre);
-
+    scanf("%s", &nuevaCarta->Nombre);
     printf("¿De que clase sera el guardian? \n");
     printf("Ingresa un numero para asignarle la clase a tu guardian");
     //validacion de clase valida
     do
     {
         printf("(1)Mago, (2)Vikingo, Nigromante(3), Bestia(4)");
-        scanf("%s", &carta_creada->Clase);   
+        scanf("%s", &nuevaCarta->Clase);   
         //mensaje de aviso
         if (ClaseGuardian<=0 || ClaseGuardian>=5)
         {
@@ -40,16 +122,16 @@ void Crear_Carta(Cartas_Juego *carta_creada)
             switch (ClaseGuardian)
             {
                 case 1:
-                    carta_creada->Clase = "Mago";
+                    nuevaCarta->Clase = "Mago";
                     break;
                 case 2:
-                    carta_creada->Clase = "Vikingo";
+                    nuevaCarta->Clase = "Vikingo";
                     break;
                 case 3:
-                    carta_creada->Clase = "Nigromante";
+                    nuevaCarta->Clase = "Nigromante";
                     break;
                 case 4:
-                    carta_creada->Clase = "Bestia";
+                    nuevaCarta->Clase = "Bestia";
                     break;        
             }
         }
@@ -62,13 +144,13 @@ void Crear_Carta(Cartas_Juego *carta_creada)
     do
     {
         printf("La vida debe ser un valor entre 1 y 200\n");
-        scanf("%d", &carta_creada->Vida);
-        if (carta_creada->Vida <1 || carta_creada->Vida > 200)
+        scanf("%d", &nuevaCarta->Vida);
+        if (nuevaCarta->Vida <1 || nuevaCarta->Vida > 200)
         {
             printf("Por favor ingrese un valor para vida valido\n");
         }
         
-    } while (carta_creada->Vida < 1 && carta_creada->Vida > 200);
+    } while (nuevaCarta->Vida < 1 && nuevaCarta->Vida > 200);
 
     //Verifica que el ataque ingresado sea un valor entre 1 y 200
     printf("¿Cuanto ataque tiene el guardian?");
@@ -77,9 +159,9 @@ void Crear_Carta(Cartas_Juego *carta_creada)
     {   
         printf("El ataque debe ser un valor entre 1 y 200\n");
 
-        scanf("%d", &carta_creada->Ataque);
+        scanf("%d", &nuevaCarta->Ataque);
 
-    } while (carta_creada->Ataque <1 && carta_creada->Ataque >200);
+    } while (nuevaCarta->Ataque <1 && nuevaCarta->Ataque >200);
     
     //Verifica que la defensa ingresada sea un valor entre 1 y 200
     printf("¿Cuanta defensa tiene el guardian?");
@@ -87,15 +169,26 @@ void Crear_Carta(Cartas_Juego *carta_creada)
     {   
         printf("La defensa debe ser un valor entre 1 y 200\n");
 
-        scanf("%d", &carta_creada->Defensa);
+        scanf("%d", &nuevaCarta->Defensa);
 
-    } while (carta_creada->Defensa <1 && carta_creada->Defensa >200);
+    } while (nuevaCarta->Defensa <1 && nuevaCarta->Defensa >200);
+
+    Agregar_Carta(nuevaCarta, "Cartas_Juego.txt");
+}
+
+
+void jugador(int vidas)
+{
+    vidas = 5;
+  
 }
 
 
 int main()
 {
     int Opcion;
+    Cartas_Juego *cartas = cargarCartasDesdeArchivo("Cartas_Juego.txt");
+    Imprimir_Cartas(cartas);
 
     //Menú y verificacion de opciones validas
     do
@@ -119,10 +212,11 @@ int main()
             switch (Opcion)
             {
                 case 1:
-                    //agregar funcion Crear_Carta para que se guarde en Cartas_Juego.txt las cartas creadas
+                    Crear_Carta(&cartas);
                 break;
     
                 case 2:
+                    Imprimir_Cartas(cartas);
 
                 break;
 
