@@ -1,1 +1,3 @@
 a,Nigromante,44,11,33
+kl,Vikingo,65,39,95
+klkkl,Bestia,179,159,148
