@@ -5,7 +5,7 @@
 //estructura para leer Cartas.txt
 typedef struct cartas
 {
-    char Nombre[10];
+    char Nombre[20];
     char Clase;
     int Vida;
     int Ataque;
@@ -100,17 +100,18 @@ void Crear_Carta(Cartas_Juego **carta_creada)
     int ClaseGuardian;
     Cartas_Juego *nuevaCarta = (Cartas_Juego*)malloc(sizeof(Cartas_Juego));
 
-    printf("***********************************************\n");
-    printf("* Bienvenido al apartado para crear una carta *\n");
-    printf("*     ¿Que nombre desea darle al guardian?     *\n");
+    printf("************************************************************\n");
+    printf("*         Bienvenido al apartado para crear cartas         *\n");
+    printf("*            Que nombre desea darle al guardian?           *\n");
     scanf("%s", &nuevaCarta->Nombre);
-    printf("¿De que clase sera el guardian? \n");
-    printf("Ingresa un numero para asignarle la clase a tu guardian");
+    printf("*              De que clase sera el guardian?              *\n");
+    printf("*    Ingresa uno de los siguientes numeros para la clase   *\n");
+   
     //validacion de clase valida
     do
     {
-        printf("(1)Mago, (2)Vikingo, Nigromante(3), Bestia(4)");
-        scanf("%s", &nuevaCarta->Clase);   
+        printf("*       (1)Mago, (2)Vikingo, Nigromante(3), Bestia(4)      *\n");
+        scanf("%d", ClaseGuardian);   
         //mensaje de aviso
         if (ClaseGuardian<=0 || ClaseGuardian>=5)
         {
@@ -122,52 +123,50 @@ void Crear_Carta(Cartas_Juego **carta_creada)
             switch (ClaseGuardian)
             {
                 case 1:
-                    nuevaCarta->Clase = "Mago";
+                    strcpy(nuevaCarta->Clase, "Mago");
                     break;
                 case 2:
-                    nuevaCarta->Clase = "Vikingo";
+                    strcpy(nuevaCarta->Clase, "Vikingo");
                     break;
                 case 3:
-                    nuevaCarta->Clase = "Nigromante";
+                    strcpy(nuevaCarta->Clase, "Nigromante");
                     break;
                 case 4:
-                    nuevaCarta->Clase = "Bestia";
+                    strcpy(nuevaCarta->Clase, "Bestia");
                     break;        
             }
         }
-        
-         
     } while (ClaseGuardian >=1 && ClaseGuardian <= 4);
 
     //Verifica que la vida ingresada sea un valor entre 1 y 200
-    printf("¿Cuanta vida posee el guardian? \n"); 
+    printf("*¿             Cuanta vida posee el guardian?*             *\n"); 
     do
     {
-        printf("La vida debe ser un valor entre 1 y 200\n");
+        printf("*          La vida debe ser un valor entre 1 y 200         *\n");
         scanf("%d", &nuevaCarta->Vida);
-        if (nuevaCarta->Vida <1 || nuevaCarta->Vida > 200)
+        if (nuevaCarta->Vida < 1 || nuevaCarta->Vida > 200)
         {
-            printf("Por favor ingrese un valor para vida valido\n");
+            printf("*       Por favor ingrese un valor para vida valido        *\n");
         }
         
     } while (nuevaCarta->Vida < 1 && nuevaCarta->Vida > 200);
 
     //Verifica que el ataque ingresado sea un valor entre 1 y 200
-    printf("¿Cuanto ataque tiene el guardian?");
+    printf("*             ¿Cuanto ataque tiene el guardian?            *\n");
 
     do
-    {   
-        printf("El ataque debe ser un valor entre 1 y 200\n");
+    { 
+        printf("*        El ataque debe ser un valor entre 1 y 200         *\n");
 
         scanf("%d", &nuevaCarta->Ataque);
 
     } while (nuevaCarta->Ataque <1 && nuevaCarta->Ataque >200);
     
     //Verifica que la defensa ingresada sea un valor entre 1 y 200
-    printf("¿Cuanta defensa tiene el guardian?");
+    printf("*            ¿Cuanta defensa tiene el guardian?            *\n");
     do
     {   
-        printf("La defensa debe ser un valor entre 1 y 200\n");
+        printf("*        La defensa debe ser un valor entre 1 y 200        *\n");
 
         scanf("%d", &nuevaCarta->Defensa);
 
@@ -177,12 +176,14 @@ void Crear_Carta(Cartas_Juego **carta_creada)
 }
 
 
+/*
+//Funcion jugador
 void jugador(int vidas)
 {
     vidas = 5;
   
 }
-
+*/
 
 int main()
 {
@@ -200,12 +201,11 @@ int main()
         printf("*             Para jugar ingrese 3            *\n");
         printf("*    Si desea salir del programa ingrese 4    *\n");
         printf("***********************************************\n");
-        _sleep(5);
         scanf("%d", &Opcion);
 
         if (Opcion <=0 || Opcion >=5)
         {
-                printf("Por favor ingrese una opcion valida");
+                printf("*     Por favor ingrese una opcion valida     *\n");
         }
         else
         {
@@ -213,22 +213,21 @@ int main()
             {
                 case 1:
                     Crear_Carta(&cartas);
-                break;
+                continue;
     
                 case 2:
                     Imprimir_Cartas(cartas);
 
-                break;
+                continue;
 
                 case 3:
 
-                break;
+                continue;
 
                 case 4:
-                    printf("¡Gracias por jugar the clash of guardians!\n");
-                    _sleep(5);
+                    printf("*       ¡Gracias por jugar the clash of guardians!         *\n");
                     exit(1);
-                    break;
+                    continue;
             }
         }
         
